@@ -6,6 +6,7 @@ import com.example.demo.controller.dto.UserDTO
 import com.example.demo.controller.dto.UserWhoOwnsCardDTO
 import com.example.demo.model.Card
 import com.example.demo.model.User
+import com.example.demo.repo.UserRepository
 import com.example.demo.service.CardService
 import jakarta.persistence.Entity
 import org.springframework.beans.factory.annotation.Autowired
@@ -16,7 +17,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
 
-@CrossOrigin(value = ["http://localhost:3000"])
+@CrossOrigin(value = ["http://localhost:3000", "http://207.246.119.200:3000"])
 @RestController
 @RequestMapping("v1/card")
 class CardController {

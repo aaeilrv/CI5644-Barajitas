@@ -1,7 +1,7 @@
 import axios, { AxiosError } from "axios";
 
 const instanceWithoutToken = axios.create({
-  baseURL: "http://localhost:8080/",
+  baseURL: process.env.NEXT_PUBLIC_API_URL,
 });
 
 export const axiosHookWithoutToken = async (request:string, url:string, body?:unknown) => {

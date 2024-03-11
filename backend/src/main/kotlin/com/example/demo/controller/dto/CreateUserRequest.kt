@@ -5,6 +5,5 @@ data class CreateUserRequest (
     val lastName: String,
     val birthDay: String,
     val username: String,
-    val emailAddress: String,
-    val password: String?
+    val emailAddress: String
 )

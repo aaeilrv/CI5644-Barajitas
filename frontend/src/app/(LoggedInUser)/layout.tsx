@@ -180,6 +180,7 @@ export default function LoggedInLayout({ children }: {
                     {navigation.map((item) => (
                       <li key={item.name}>
                         <a
+                        data-testid={item.name}
                           href={item.href}
                           className={classNames(
                             item.current
@@ -209,6 +210,7 @@ export default function LoggedInLayout({ children }: {
                     {personal_navigation.map((item) => (
                       <li key={item.name}>
                         <a
+                          data-testid={item.name}
                           href={item.href}
                           className={classNames(
                             item.current

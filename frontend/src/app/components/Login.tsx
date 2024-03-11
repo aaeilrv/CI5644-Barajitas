@@ -46,11 +46,11 @@ export const Login = () => {
         loginBody
       );
 
-      if (loginResponse.status === 'success') {
+      if (loginResponse!!.status === 'success') {
         // Si el inicio de sesión fue exitoso, realiza las acciones necesarias.
         console.log('Inicio de sesión exitoso');
       } else {
-        console.log(loginResponse.message);
+        console.log(loginResponse!!.message);
       }
     } catch (error) {
       console.error('Error al iniciar sesión', error);

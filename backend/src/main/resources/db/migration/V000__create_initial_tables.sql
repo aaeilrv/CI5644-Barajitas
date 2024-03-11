@@ -1,11 +1,13 @@
-CREATE TYPE EXCHANGE_REQUEST_STATUS AS ENUM ('PENDING', 'ACCEPTED', 'REJECTED');
+CREATE TYPE EXCHANGE_REQUEST_STATUS AS ENUM ('PENDING', 'ACCEPTED', 'REJECTED', 'CANCELLED');
 CREATE TYPE CREDIT_CARD_TYPE AS ENUM ('VISA', 'MASTERCARD');
 CREATE TYPE FIELD_POSITION AS ENUM ('GOALKEEPER',
                                     'MIDFIELDER',
                                     'DEFENDER',
                                     'FORWARD');
+CREATE TYPE EXCHANGE_OFFER_STATUS AS ENUM ('PENDING', 'ACCEPTED', 'REJECTED', 'COUNTEROFFER', 'CANCELLED');
 CREATE CAST (VARCHAR AS FIELD_POSITION) WITH INOUT AS IMPLICIT;
 CREATE CAST (VARCHAR AS EXCHANGE_REQUEST_STATUS) WITH INOUT AS IMPLICIT;
+CREATE CAST (VARCHAR AS EXCHANGE_OFFER_STATUS) WITH INOUT AS IMPLICIT;
 CREATE CAST (VARCHAR AS CREDIT_CARD_TYPE) WITH INOUT AS IMPLICIT;
 
 CREATE TABLE IF NOT EXISTS users (
@@ -13,9 +15,9 @@ CREATE TABLE IF NOT EXISTS users (
     first_name VARCHAR(100) NOT NULL,
     last_name VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL,
-    password VARCHAR(100),
     birthday DATE NOT NULL,
-    username VARCHAR(20) NOT NULL UNIQUE
+    username VARCHAR(20) NOT NULL UNIQUE,
+    auth0_sub VARCHAR(100) UNIQUE --Identificador de usuario de Auth0
 );
 
 CREATE TABLE IF NOT EXISTS card(
@@ -49,15 +51,30 @@ CREATE TABLE IF NOT EXISTS purchase(
 
 CREATE TABLE IF NOT EXISTS exchange_request(
     id BIGSERIAL PRIMARY KEY,
-    requester_id BIGINT NOT NULL REFERENCES users(id),
-    recipient_id BIGINT NOT NULL REFERENCES users(id),
-    offered_card_id BIGINT NOT NULL REFERENCES card(id),
-    offered_card_amount INT NOT NULL CHECK(offered_card_amount > 0),
+    user_id BIGINT NOT NULL REFERENCES users(id),
     requested_card_id BIGINT NOT NULL REFERENCES card(id),
-    requested_card_amount INT NOT NULL CHECK(requested_card_amount > 0),
-    request_status EXCHANGE_REQUEST_STATUS NOT NULL,
-    created_at TIMESTAMP NOT NULL
-);
+    status EXCHANGE_REQUEST_STATUS NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+
+CREATE TABLE IF NOT EXISTS exchange_offer(
+    id BIGSERIAL PRIMARY KEY,
+    bidder_id BIGINT NOT NULL REFERENCES users(id),
+    exchange_request_id BIGINT NOT NULL REFERENCES exchange_request(id),
+    offered_card_id BIGINT NOT NULL REFERENCES card(id),
+    status EXCHANGE_OFFER_STATUS NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+
+CREATE TABLE IF NOT EXISTS exchange_counteroffer (
+    id BIGSERIAL PRIMARY KEY,
+    offered_card_id BIGINT NOT NULL REFERENCES card(id),
+    status EXCHANGE_REQUEST_STATUS NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    exchange_request_id BIGINT NOT NULL REFERENCES exchange_request(id),
+    exchange_offer_id BIGINT NOT NULL REFERENCES exchange_offer(id),
+    UNIQUE(exchange_request_id, exchange_offer_id)
+    );
 
 CREATE TABLE IF NOT EXISTS ownership(
     id BIGSERIAL PRIMARY KEY,
@@ -68,8 +85,6 @@ CREATE TABLE IF NOT EXISTS ownership(
 );
 
 CREATE INDEX IF NOT EXISTS idx_user_id_username ON users(id, username);
-CREATE INDEX IF NOT EXISTS idx_exchange_owner_id_receiver_id ON exchange_request(recipient_id, requester_id);
-CREATE INDEX IF NOT EXISTS idx_exchange_request_status ON exchange_request(request_status);
 CREATE INDEX IF NOT EXISTS idx_ownership_user_id_card_id ON ownership(user_id, card_id);
 CREATE INDEX IF NOT EXISTS idx_purchase_user_id_credit_card_id ON purchase(user_id,credit_card_id);
 CREATE INDEX IF NOT EXISTS idx_payment_information_user_id ON credit_card(user_id);

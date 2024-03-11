@@ -1,11 +1,11 @@
 auth0:
-  audience: { panik.us.auth0.com }
+  audience: { https://barajitas.com }
 spring:
   security:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: https://{http://example.demo}/
+          issuer-uri: https://dev-crxb1uekqycez2b5.us.auth0.com/
   datasource:
     url: jdbc:postgresql://localhost:5432/TestHerrWeb
     username: ci5644user
@@ -14,6 +14,7 @@ spring:
     hibernate:
       ddl-auto: validate
     generate-ddl: true
+    show-sql: true
   flyway:
     enabled: true
     baseline-version: 000
@@ -25,3 +26,15 @@ logging:
     org:
       hibernate:
         SQL: DEBUG
+management:
+  endpoint:
+    health:
+      enabled: true
+  endpoints:
+    enabled-by-default: false
+    jmx:
+      exposure:
+        include: health
+    web:
+      exposure:
+        include: health

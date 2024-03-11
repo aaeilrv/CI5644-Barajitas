@@ -27,7 +27,7 @@ const faq_data = [
 ]
 
 export default function FAQ() {
-  const [selected, setSelected] = useState(null)
+  const [selected, setSelected] = useState<number | SetStateAction<null>>(null)
 
   const toggle = (index: number | SetStateAction<null>) => {
     if(selected == index){

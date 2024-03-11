@@ -8,7 +8,8 @@ data class CardOwnedByUserDTO(
     private val playerPosition: String,
     private val playerNumber: Short,
     private val numberOwned: Int,
-    private val country: String
+    private val country: String,
+    private val photoUrl: String
 ) {
     fun getCardId(): Long = this.cardId
     fun getPlayerName(): String = this.playerName
@@ -16,6 +17,7 @@ data class CardOwnedByUserDTO(
     fun getPlayerNumber(): Short = this.playerNumber
     fun getNumberOwned(): Int = this.numberOwned
     fun getCountry(): String = this.country
+    fun getPhotoURL(): String = this.photoUrl
 
     constructor(ownershipObject: Ownership): this(
         ownershipObject.getCard().getId(),
@@ -23,8 +25,11 @@ data class CardOwnedByUserDTO(
         ownershipObject.getCard().getPlayerPosition().toString(),
         ownershipObject.getCard().getPlayerNumber(),
         ownershipObject.getNumberOwned(),
-        ownershipObject.getCard().getCountry()
+        ownershipObject.getCard().getCountry(),
+        ownershipObject.getCard().getPhotoURL()!!
     )
+
+
 }
 
 data class UserWhoOwnsCardDTO(

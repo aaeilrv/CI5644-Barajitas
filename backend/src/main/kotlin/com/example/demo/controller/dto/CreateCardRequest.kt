@@ -7,5 +7,5 @@ data class CreateCardRequest (
     val playerNumber: Short,
     val playerPosition: String,
     val photoURL: String?,
-    val country:String
+    val country: String
 )

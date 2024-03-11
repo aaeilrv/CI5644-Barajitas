@@ -14,6 +14,9 @@ open class User (
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private val id: Long?,
 
+    @Column(name = "auth0_sub")
+    private val auth0Sub: String,
+
     @Column(nullable = false, length = 100)
     private var firstName: String,
 
@@ -66,11 +69,31 @@ open class User (
         return this.email
     }
 
+    open fun setFirstName(firstName : String) {
+        this.firstName = firstName
+    }
+
+    open fun setLastName(lastName : String) {
+        this.lastName = lastName
+    }
+    
+    open fun setUsername(username : String) {
+        this.username = username
+    }
+
+    open fun setEmail(email : String) {
+        this.email = email
+    }
+
+    open fun getAuth0Sub(): String = this.auth0Sub
+
+
     open fun getCardsOwned(): MutableList<Ownership> = this.cards.toMutableList()
 
-    constructor() : this(null, "", "", java.sql.Date(-1), "", "")
-    constructor(request: CreateUserRequest) : this(
+    constructor() : this(null, "", "", "", java.sql.Date(-1), "", "")
+    constructor(request: CreateUserRequest, auth0Sub: String) : this(
         null,
+        auth0Sub,
         request.firstName,
         request.lastName,
         java.sql.Date.valueOf(request.birthDay),

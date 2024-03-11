@@ -3,7 +3,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 
 export default function Collection() {
-  const USER_API_URL = process.env.NEXT_PUBLIC_CARD_API_URL;
+  const API_CARD_DATA_URL = `${process.env.NEXT_PUBLIC_CARD_API_URL}`;
   const [cards, setCards] = useState<any[]>([]);
   const [loading, setLoading] = useState(false)
 
@@ -11,7 +11,9 @@ export default function Collection() {
     const fetchCards = async () => {
       setLoading(true)
       try {
-        const response = await fetch('http://localhost:8080/v1/card', {
+        const response = await fetch(
+          API_CARD_DATA_URL,
+          {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json'
@@ -25,7 +27,7 @@ export default function Collection() {
       setLoading(false)
     }
     fetchCards();
-  }, [USER_API_URL]);
+  }, [API_CARD_DATA_URL]);
   
   return (
     <div className="flex justify-center">
